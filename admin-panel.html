@@ -1,0 +1,2260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración | El Artesano</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #ede8d0;
+            --color-secondary: #607178;
+            --color-dark: #01273c;
+            --color-accent: #353c42;
+            --color-white: #FFFFFF;
+            --sidebar-width: 280px;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--color-dark) 0%, var(--color-secondary) 100%);
+            padding: 0;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-brand {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(237, 232, 208, 0.2);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .sidebar-brand h3 {
+            font-family: var(--font-heading);
+            color: var(--color-primary);
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-brand p {
+            color: rgba(237, 232, 208, 0.7);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 1rem 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(237, 232, 208, 0.1);
+            color: var(--color-primary);
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(237, 232, 208, 0.15);
+            color: var(--color-primary);
+            border-left: 3px solid var(--color-primary);
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+            margin-right: 12px;
+            font-size: 1.25rem;
+        }
+
+        .user-info {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid rgba(237, 232, 208, 0.2);
+            background: rgba(0,0,0,0.2);
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .user-info .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-info p {
+            color: rgba(237, 232, 208, 0.7);
+            font-size: 0.75rem;
+            margin: 0 0 3px 0;
+        }
+
+        .user-info strong {
+            color: var(--color-primary);
+            font-size: 0.9rem;
+            display: block;
+        }
+
+        .btn-logout {
+            margin-top: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            color: var(--color-primary);
+            border: 1px solid rgba(237, 232, 208, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: var(--color-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .top-bar h1 {
+            font-family: var(--font-heading);
+            color: var(--color-dark);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .top-bar p {
+            color: var(--color-secondary);
+            margin: 0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.75rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin-right: 1.25rem;
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #d4cba9 100%);
+            color: var(--color-dark);
+        }
+
+        .stat-icon.secondary {
+            background: linear-gradient(135deg, var(--color-secondary) 0%, #4a5a5f 100%);
+            color: white;
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .stat-icon.info {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .stat-content h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-dark);
+            margin: 0;
+        }
+
+        .stat-content p {
+            color: var(--color-secondary);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .content-section h2 {
+            font-family: var(--font-heading);
+            color: var(--color-dark);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-primary-custom {
+            background: var(--color-primary);
+            color: var(--color-dark);
+            border: none;
+            padding: 0.625rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--color-secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            background: #f8f9fa;
+        }
+
+        .data-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--color-dark);
+            font-size: 0.875rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            color: #495057;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .btn-action {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            border: none;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-edit:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: var(--color-dark);
+            color: var(--color-primary);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-family: var(--font-heading);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--color-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: calc(90vh - 180px);
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.625rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <h3>🥖 El Artesano</h3>
+            <p>Panel de Administración</p>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" onclick="showSection('dashboard')"><i class="ri-dashboard-line"></i> Dashboard</a></li>
+            <li><a href="#" onclick="showSection('products')"><i class="ri-shopping-bag-line"></i> Productos</a></li>
+            <li><a href="#" onclick="showSection('orders')"><i class="ri-file-list-line"></i> Pedidos</a></li>
+            <li><a href="index.html"><i class="ri-home-line"></i> Ver Sitio Web</a></li>
+        </ul>
+
+        <div class="user-info">
+            <div class="user-avatar">A</div>
+            <p>Administrador</p>
+            <strong id="adminEmail">admin@elartesano.com</strong>
+            <button class="btn-logout" onclick="handleLogout()">
+                <i class="ri-logout-box-line"></i> Cerrar Sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h1>Panel de Administración</h1>
+            <p>Bienvenido de vuelta, gestiona tu negocio desde aquí</p>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <i class="ri-shopping-bag-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="stat-products">0</h3>
+                        <p>Productos Activos</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <i class="ri-shopping-cart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="stat-orders">0</h3>
+                        <p>Ventas Totales</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon info">
+                        <i class="ri-money-dollar-circle-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="stat-revenue">$0</h3>
+                        <p>Ingresos Totales</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon secondary">
+                        <i class="ri-calendar-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="stat-today">$0</h3>
+                        <p>Ventas Hoy</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos y Métricas Detalladas -->
+            <div class="row" style="margin-bottom: 2rem;">
+                <div class="col-md-8 mb-4">
+                    <div class="content-section">
+                        <h3><i class="ri-line-chart-line"></i> Ventas de los Últimos 7 Días</h3>
+                        <canvas id="salesChart" style="max-height: 300px;"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="content-section">
+                        <h3><i class="ri-trophy-line"></i> Productos Más Vendidos</h3>
+                        <div id="top-products-list">
+                            <p style="color: #999; text-align: center; padding: 20px;">Cargando...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas de Ventas -->
+            <div class="content-section" style="margin-bottom: 2rem;">
+                <h3><i class="ri-bar-chart-box-line"></i> Resumen de Ventas</h3>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                            <i class="ri-calendar-week-line" style="font-size: 2rem; color: var(--color-secondary); margin-bottom: 10px;"></i>
+                            <h4 id="stat-week" style="color: var(--color-dark); margin: 10px 0;">$0</h4>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Esta Semana</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                            <i class="ri-calendar-2-line" style="font-size: 2rem; color: var(--color-primary); margin-bottom: 10px;"></i>
+                            <h4 id="stat-month" style="color: var(--color-dark); margin: 10px 0;">$0</h4>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Este Mes</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                            <i class="ri-shopping-basket-line" style="font-size: 2rem; color: #10b981; margin-bottom: 10px;"></i>
+                            <h4 id="stat-avg-order" style="color: var(--color-dark); margin: 10px 0;">$0</h4>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Ticket Promedio</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 mb-3">
+                        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                            <i class="ri-archive-line" style="font-size: 2rem; color: #ef4444; margin-bottom: 10px;"></i>
+                            <h4 id="stat-pending" style="color: var(--color-dark); margin: 10px 0;">0</h4>
+                            <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Pedidos Pendientes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="content-section">
+                <h2>Acciones Rápidas</h2>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <button class="btn-primary-custom" onclick="showSection('products'); openProductModal()">
+                        <i class="ri-add-line"></i> Crear Producto
+                    </button>
+                    <button class="btn-primary-custom" onclick="showSection('orders')">
+                        <i class="ri-file-list-line"></i> Ver Pedidos
+                    </button>
+                    <button class="btn-primary-custom" onclick="window.location.href='poblar-datos-muestra.html'">
+                        <i class="ri-database-line"></i> Poblar Datos de Muestra
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="products-section" style="display: none;">
+            <div class="content-section">
+                <h2>
+                    Productos
+                    <button class="btn-primary-custom" onclick="openProductModal()">
+                        <i class="ri-add-line"></i> Nuevo Producto
+                    </button>
+                </h2>
+                <div id="products-table-container">
+                    <div class="empty-state">
+                        <i class="ri-shopping-bag-line"></i>
+                        <p>Cargando productos...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div id="courses-section" style="display: none;">
+            <div class="content-section">
+                <h2>
+                    Cursos
+                    <button class="btn-primary-custom" onclick="openCourseModal()">
+                        <i class="ri-add-line"></i> Nuevo Curso
+                    </button>
+                </h2>
+                <div id="courses-table-container">
+                    <div class="empty-state">
+                        <i class="ri-book-line"></i>
+                        <p>Cargando cursos...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders-section" style="display: none;">
+            <div class="content-section">
+                <h2>Órdenes de Compra</h2>
+                <div id="orders-table-container">
+                    <div class="empty-state">
+                        <i class="ri-file-list-line"></i>
+                        <p>No hay órdenes registradas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Requests Section -->
+        <div id="requests-section" style="display: none;">
+            <div class="content-section">
+                <h2>
+                    Solicitudes de Acceso
+                    <span id="pending-badge" style="background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; margin-left: 10px;">0</span>
+                </h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Curso de Interés</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requests-table-body">
+                            <tr>
+                                <td colspan="7" class="empty-state">
+                                    <i class="ri-mail-line"></i>
+                                    <p>Cargando solicitudes...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Courses Section (NEW) -->
+        <div id="user-courses-section" style="display: none;">
+            <div class="content-section">
+                <h2>
+                    <i class="ri-user-follow-line"></i> Gestión de Cursos de Usuarios
+                </h2>
+                <p style="color: var(--color-secondary); margin-bottom: 2rem;">
+                    Visualiza y edita qué usuarios tienen acceso a cada curso. Puedes eliminar asignaciones incorrectas.
+                </p>
+                
+                <div id="user-courses-table-container">
+                    <div class="empty-state">
+                        <i class="ri-loader-4-line"></i>
+                        <p>Cargando cursos de usuarios...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="users-section" style="display: none;">
+            <div class="content-section">
+                <h2>
+                    Usuarios Registrados
+                    <button class="btn-primary-custom" onclick="openUserModal()">
+                        <i class="ri-user-add-line"></i> Crear Usuario
+                    </button>
+                </h2>
+                <div id="users-table-container">
+                    <div class="empty-state">
+                        <i class="ri-team-line"></i>
+                        <p>Cargando usuarios...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Producto -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Crear Producto</h3>
+                <button class="modal-close" onclick="closeProductModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <input type="hidden" id="productId">
+                    
+                    <div class="form-group">
+                        <label>Nombre del Producto*</label>
+                        <input type="text" class="form-control" id="productName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea class="form-control" id="productDescription"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio (ARS)*</label>
+                        <input type="number" class="form-control" id="productPrice" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL de Imagen*</label>
+                        <input type="url" class="form-control" id="productImage" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small style="color: #94a3b8; margin-top: 5px; display: block;">Puedes usar Google Photos, Imgur, Unsplash, etc.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select class="form-control" id="productCategory">
+                            <option>Panes</option>
+                            <option>Facturas</option>
+                            <option>Tartas</option>
+                            <option>Empanadas</option>
+                            <option>Otros</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" class="form-control" id="productStock" value="0">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                <button class="btn-primary-custom" onclick="saveProduct()">Guardar Producto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Curso -->
+    <div id="courseModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="courseModalTitle">Crear Curso</h3>
+                <button class="modal-close" onclick="closeCourseModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="courseForm">
+                    <input type="hidden" id="courseId">
+                    
+                    <div class="form-group">
+                        <label>Nombre del Curso*</label>
+                        <input type="text" class="form-control" id="courseName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <textarea class="form-control" id="courseDescription"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio (ARS)*</label>
+                        <input type="number" class="form-control" id="coursePrice" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL del Video de YouTube*</label>
+                        <input type="url" class="form-control" id="courseVideoUrl" placeholder="https://www.youtube.com/watch?v=..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL de Imagen (opcional)</label>
+                        <input type="url" class="form-control" id="courseThumbnail" placeholder="Deja vacío para usar miniatura de YouTube">
+                        <small style="color: #94a3b8; margin-top: 5px; display: block;">Google Photos, Imgur, o deja vacío para usar la de YouTube</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duración</label>
+                        <input type="text" class="form-control" id="courseDuration" placeholder="4 semanas">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Número de Lecciones</label>
+                        <input type="number" class="form-control" id="courseLessons" value="12">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nivel</label>
+                        <select class="form-control" id="courseLevel">
+                            <option>Principiante</option>
+                            <option>Intermedio</option>
+                            <option>Avanzado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Instructor</label>
+                        <input type="text" class="form-control" id="courseInstructor" value="Chef Master">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <input type="text" class="form-control" id="courseCategory" value="Panadería">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeCourseModal()">Cancelar</button>
+                <button class="btn-primary-custom" onclick="saveCourse()">Guardar Curso</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Usuario -->
+    <div id="userModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">Crear Usuario y Asignar Curso</h3>
+                <button class="modal-close" onclick="closeUserModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <input type="hidden" id="userId">
+                    
+                    <div class="form-group">
+                        <label>Email del Usuario*</label>
+                        <input type="email" class="form-control" id="userEmail" required>
+                        <small style="color: #6b7280;">Se creará un usuario nuevo o se buscará uno existente</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Nombre Completo*</label>
+                        <input type="text" class="form-control" id="userDisplayName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contraseña Inicial*</label>
+                        <input type="password" class="form-control" id="userPassword" placeholder="Mínimo 6 caracteres" required>
+                        <small style="color: #6b7280;">El usuario puede cambiarla después de iniciar sesión</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Asignar Curso</label>
+                        <select class="form-control" id="userAssignCourse">
+                            <option value="">-- Sin curso asignado --</option>
+                        </select>
+                        <small style="color: #6b7280;">Opcional: Asigna acceso inmediato a un curso</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select class="form-control" id="userRole">
+                            <option value="user">Usuario Normal</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div id="user-credentials-display" style="display: none; background: #f0fdf4; padding: 1.5rem; border-radius: 10px; margin-top: 1rem; border: 2px solid #10b981;">
+                    <h4 style="color: #059669; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="ri-check-line"></i> Usuario Creado Exitosamente
+                    </h4>
+                    <p style="margin: 0.5rem 0;"><strong>Email:</strong> <span id="display-email"></span></p>
+                    <p style="margin: 0.5rem 0;"><strong>Contraseña:</strong> <span id="display-password"></span></p>
+                    <p style="margin: 0.5rem 0;"><strong>Curso Asignado:</strong> <span id="display-course"></span></p>
+                    <p style="color: #059669; font-size: 0.9rem; margin-top: 1rem;">
+                        <i class="ri-information-line"></i> 
+                        Envía estas credenciales al usuario de forma segura. Puede cambiar su contraseña después de iniciar sesión.
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeUserModal()">Cancelar</button>
+                <button class="btn-primary-custom" onclick="saveUser()" id="btn-save-user">
+                    <i class="ri-save-line"></i> Crear Usuario
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="/public/js/firebase-init.js"></script>
+
+    <script>
+        // Variables globales
+        let currentUser = null;
+        let editingProductId = null;
+        let editingCourseId = null;
+
+        // Verificar autenticación
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            currentUser = user;
+            document.getElementById('adminEmail').textContent = user.email;
+
+            // Verificar si es admin
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            if (!userDoc.exists || !userDoc.data().roles?.admin) {
+                alert('No tienes permisos de administrador');
+                await auth.signOut();
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Cargar datos iniciales
+            loadDashboardMetrics();
+            loadProducts();
+        });
+
+        // Navegación entre secciones
+        function showSection(section) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('[id$="-section"]').forEach(el => el.style.display = 'none');
+            
+            // Remover active de menú
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            
+            // Mostrar sección seleccionada
+            document.getElementById(`${section}-section`).style.display = 'block';
+            
+            // Activar menú
+            event?.target?.classList.add('active');
+
+            // Cargar datos según sección
+            if (section === 'dashboard') loadDashboardMetrics();
+            else if (section === 'products') loadProducts();
+            else if (section === 'orders') loadOrders();
+        }
+
+        // Cargar estadísticas del dashboard (DEPRECATED - usar loadDashboardMetrics)
+        async function loadDashboardStats() {
+            // Esta función ya no se usa, ahora usamos loadDashboardMetrics()
+            // Se mantiene por compatibilidad
+            await loadDashboardMetrics();
+        }
+
+        // ===== PRODUCTOS =====
+        async function loadProducts() {
+            const container = document.getElementById('products-table-container');
+            
+            try {
+                const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="ri-shopping-bag-line"></i>
+                            <p>No hay productos creados</p>
+                            <button class="btn-primary-custom" onclick="openProductModal()">Crear Primer Producto</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Categoría</th>
+                                <th>Stock</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                snapshot.forEach(doc => {
+                    const product = doc.data();
+                    html += `
+                        <tr>
+                            <td><strong>${product.name}</strong></td>
+                            <td>$${product.price.toFixed(2)}</td>
+                            <td>${product.category || 'Sin categoría'}</td>
+                            <td><span class="badge ${product.stock > 0 ? 'badge-success' : 'badge-warning'}">${product.stock || 0}</span></td>
+                            <td>
+                                <button class="btn-action btn-edit" onclick="editProduct('${doc.id}')">
+                                    <i class="ri-edit-line"></i> Editar
+                                </button>
+                                <button class="btn-action btn-delete" onclick="deleteProduct('${doc.id}')">
+                                    <i class="ri-delete-bin-line"></i> Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+                container.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Error: ${error.message}</p></div>`;
+            }
+        }
+
+        function openProductModal() {
+            editingProductId = null;
+            document.getElementById('productModalTitle').textContent = 'Crear Producto';
+            document.getElementById('productForm').reset();
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        async function editProduct(id) {
+            try {
+                const doc = await db.collection('products').doc(id).get();
+                const product = doc.data();
+
+                editingProductId = id;
+                document.getElementById('productModalTitle').textContent = 'Editar Producto';
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productDescription').value = product.description || '';
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productImage').value = product.imageUrl || '';
+                document.getElementById('productCategory').value = product.category || 'Panes';
+                document.getElementById('productStock').value = product.stock || 0;
+
+                document.getElementById('productModal').classList.add('active');
+            } catch (error) {
+                alert('Error al cargar producto: ' + error.message);
+            }
+        }
+
+        async function saveProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const description = document.getElementById('productDescription').value.trim();
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const imageUrl = document.getElementById('productImage').value.trim();
+            const category = document.getElementById('productCategory').value;
+            const stock = parseInt(document.getElementById('productStock').value);
+
+            if (!name || !price) {
+                alert('Por favor completa los campos obligatorios');
+                return;
+            }
+
+            const productData = {
+                name,
+                description,
+                price,
+                imageUrl: imageUrl || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600',
+                category,
+                stock
+            };
+
+            try {
+                if (editingProductId) {
+                    // Al actualizar, NO enviar createdAt
+                    await db.collection('products').doc(editingProductId).update(productData);
+                    alert('✅ Producto actualizado exitosamente');
+                } else {
+                    // Al crear, agregar createdAt
+                    productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('products').add(productData);
+                    alert('✅ Producto creado exitosamente');
+                }
+
+                closeProductModal();
+                loadProducts();
+                loadDashboardStats();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+
+            try {
+                await db.collection('products').doc(id).delete();
+                alert('✅ Producto eliminado');
+                loadProducts();
+                loadDashboardStats();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ===== CURSOS =====
+        async function loadCourses() {
+            const container = document.getElementById('courses-table-container');
+            
+            try {
+                const snapshot = await db.collection('courses').orderBy('createdAt', 'desc').get();
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="ri-book-line"></i>
+                            <p>No hay cursos creados</p>
+                            <button class="btn-primary-custom" onclick="openCourseModal()">Crear Primer Curso</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Curso</th>
+                                <th>Precio</th>
+                                <th>Duración</th>
+                                <th>Nivel</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                snapshot.forEach(doc => {
+                    const course = doc.data();
+                    html += `
+                        <tr>
+                            <td><strong>${course.name}</strong></td>
+                            <td>$${course.price.toFixed(2)}</td>
+                            <td>${course.duration || 'N/A'}</td>
+                            <td><span class="badge badge-success">${course.level || 'Principiante'}</span></td>
+                            <td>
+                                <button class="btn-action btn-edit" onclick="editCourse('${doc.id}')">
+                                    <i class="ri-edit-line"></i> Editar
+                                </button>
+                                <button class="btn-action btn-delete" onclick="deleteCourse('${doc.id}')">
+                                    <i class="ri-delete-bin-line"></i> Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error cargando cursos:', error);
+                container.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Error: ${error.message}</p></div>`;
+            }
+        }
+
+        function openCourseModal() {
+            editingCourseId = null;
+            document.getElementById('courseModalTitle').textContent = 'Crear Curso';
+            document.getElementById('courseForm').reset();
+            document.getElementById('courseModal').classList.add('active');
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseModal').classList.remove('active');
+        }
+
+        async function editCourse(id) {
+            try {
+                const doc = await db.collection('courses').doc(id).get();
+                const course = doc.data();
+
+                editingCourseId = id;
+                document.getElementById('courseModalTitle').textContent = 'Editar Curso';
+                document.getElementById('courseName').value = course.name;
+                document.getElementById('courseDescription').value = course.description || '';
+                document.getElementById('coursePrice').value = course.price;
+                document.getElementById('courseVideoUrl').value = course.videoUrl || '';
+                document.getElementById('courseDuration').value = course.duration || '';
+                document.getElementById('courseLessons').value = course.lessons || 12;
+                document.getElementById('courseLevel').value = course.level || 'Principiante';
+                document.getElementById('courseInstructor').value = course.instructor || 'Chef Master';
+                document.getElementById('courseCategory').value = course.category || 'Panadería';
+
+                document.getElementById('courseModal').classList.add('active');
+            } catch (error) {
+                alert('Error al cargar curso: ' + error.message);
+            }
+        }
+
+        function extractYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function isDirectVideoUrl(url) {
+            const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv'];
+            return videoExtensions.some(ext => url.toLowerCase().includes(ext));
+        }
+
+        async function saveCourse() {
+            const name = document.getElementById('courseName').value.trim();
+            const description = document.getElementById('courseDescription').value.trim();
+            const price = parseFloat(document.getElementById('coursePrice').value);
+            const videoUrl = document.getElementById('courseVideoUrl').value.trim();
+            const customThumbnail = document.getElementById('courseThumbnail').value.trim();
+            const duration = document.getElementById('courseDuration').value.trim();
+            const lessons = parseInt(document.getElementById('courseLessons').value);
+            const level = document.getElementById('courseLevel').value;
+            const instructor = document.getElementById('courseInstructor').value.trim();
+            const category = document.getElementById('courseCategory').value.trim();
+
+            if (!name || !price || !videoUrl) {
+                alert('Por favor completa los campos obligatorios');
+                return;
+            }
+
+            const youtubeId = extractYouTubeId(videoUrl);
+            const isDirectVideo = isDirectVideoUrl(videoUrl);
+            
+            if (!youtubeId && !isDirectVideo) {
+                alert('URL de video inválida. Use una URL de YouTube o un archivo de video directo (.mp4, .webm, etc.)');
+                return;
+            }
+
+            const thumbnailUrl = customThumbnail || 
+                (youtubeId ? `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg` : 'img/default-video-thumbnail.jpg');
+
+            const courseData = {
+                name,
+                description,
+                price,
+                videoUrl,
+                youtubeId: youtubeId || null,
+                thumbnailUrl,
+                duration,
+                lessons,
+                level,
+                instructor,
+                category,
+                published: true
+            };
+
+            try {
+                if (editingCourseId) {
+                    // Al actualizar, NO enviar createdAt
+                    await db.collection('courses').doc(editingCourseId).update(courseData);
+                    alert('✅ Curso actualizado exitosamente');
+                } else {
+                    // Al crear, agregar createdAt
+                    courseData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('courses').add(courseData);
+                    alert('✅ Curso creado exitosamente');
+                }
+
+                closeCourseModal();
+                loadCourses();
+                loadDashboardStats();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+        
+
+        async function deleteCourse(id) {
+            if (!confirm('¿Estás seguro de eliminar este curso?')) return;
+
+            try {
+                await db.collection('courses').doc(id).delete();
+                alert('✅ Curso eliminado');
+                loadCourses();
+                loadDashboardStats();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ===== ÓRDENES =====
+        async function loadOrders() {
+            const container = document.getElementById('orders-table-container');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="ri-file-list-line"></i>
+                    <p>Sistema de órdenes próximamente</p>
+                </div>
+            `;
+        }
+
+        // ===== CURSOS DE USUARIOS =====
+        async function loadUserCourses() {
+            const container = document.getElementById('user-courses-table-container');
+            
+            try {
+                const snapshot = await db.collection('user_courses').orderBy('assignedAt', 'desc').get();
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="ri-book-line"></i>
+                            <p>No hay cursos asignados a usuarios todavía</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Curso</th>
+                                <th>Estado</th>
+                                <th>Fecha Asignación</th>
+                                <th>Fecha Expiración</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                for (const doc of snapshot.docs) {
+                    const userCourse = doc.data();
+                    
+                    // Obtener información del usuario
+                    let userName = 'Usuario eliminado';
+                    let userEmail = '';
+                    try {
+                        const userDoc = await db.collection('users').doc(userCourse.userId).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            userName = userData.displayName || userData.email;
+                            userEmail = userData.email;
+                        }
+                    } catch (e) {
+                        console.error('Error obteniendo usuario:', e);
+                    }
+                    
+                    // Obtener información del curso
+                    let courseName = 'Curso eliminado';
+                    try {
+                        const courseDoc = await db.collection('courses').doc(userCourse.courseId).get();
+                        if (courseDoc.exists) {
+                            courseName = courseDoc.data().name;
+                        }
+                    } catch (e) {
+                        console.error('Error obteniendo curso:', e);
+                    }
+                    
+                    const assignedDate = userCourse.assignedAt ? new Date(userCourse.assignedAt.toDate()).toLocaleDateString() : 'N/A';
+                    const expiresDate = userCourse.expiresAt ? new Date(userCourse.expiresAt.toDate()).toLocaleDateString() : 'Sin expiración';
+                    const isActive = userCourse.active !== false;
+                    
+                    html += `
+                        <tr style="${!isActive ? 'opacity: 0.6;' : ''}">
+                            <td>
+                                <strong>${userName}</strong>
+                                ${userEmail ? '<br><small style="color: #6b7280;">' + userEmail + '</small>' : ''}
+                            </td>
+                            <td><strong>${courseName}</strong></td>
+                            <td>
+                                <span class="badge ${isActive ? 'badge-success' : 'badge-danger'}">
+                                    ${isActive ? 'Activo' : 'Inactivo'}
+                                </span>
+                            </td>
+                            <td>${assignedDate}</td>
+                            <td>${expiresDate}</td>
+                            <td>
+                                ${isActive ? `
+                                    <button class="btn-action btn-delete" onclick="revokeUserCourse('${doc.id}', '${userName}', '${courseName}')" title="Revocar acceso">
+                                        <i class="ri-close-circle-line"></i> Revocar
+                                    </button>
+                                ` : `
+                                    <button class="btn-action btn-edit" onclick="reactivateUserCourse('${doc.id}', '${userName}', '${courseName}')" title="Reactivar acceso">
+                                        <i class="ri-refresh-line"></i> Reactivar
+                                    </button>
+                                    <button class="btn-action btn-delete" onclick="deleteUserCourse('${doc.id}')" title="Eliminar permanentemente">
+                                        <i class="ri-delete-bin-line"></i> Eliminar
+                                    </button>
+                                `}
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error cargando cursos de usuarios:', error);
+                container.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Error: ${error.message}</p></div>`;
+            }
+        }
+
+        async function revokeUserCourse(userCourseId, userName, courseName) {
+            if (!confirm(`¿Desactivar el acceso de "${userName}" al curso "${courseName}"?\n\nEl usuario ya no podrá ver el curso, pero el registro se conservará.`)) {
+                return;
+            }
+
+            try {
+                await db.collection('user_courses').doc(userCourseId).update({
+                    active: false,
+                    revokedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('Acceso revocado exitosamente');
+                loadUserCourses();
+            } catch (error) {
+                console.error('Error revocando acceso:', error);
+                alert('Error al revocar acceso: ' + error.message);
+            }
+        }
+
+        async function reactivateUserCourse(userCourseId, userName, courseName) {
+            if (!confirm(`¿Reactivar el acceso de "${userName}" al curso "${courseName}"?`)) {
+                return;
+            }
+
+            try {
+                await db.collection('user_courses').doc(userCourseId).update({
+                    active: true,
+                    reactivatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('Acceso reactivado exitosamente');
+                loadUserCourses();
+            } catch (error) {
+                console.error('Error reactivando acceso:', error);
+                alert('Error al reactivar acceso: ' + error.message);
+            }
+        }
+
+        async function deleteUserCourse(userCourseId) {
+            if (!confirm('¿ELIMINAR PERMANENTEMENTE este registro?\n\nEsta acción no se puede deshacer.')) {
+                return;
+            }
+
+            try {
+                await db.collection('user_courses').doc(userCourseId).delete();
+                alert('Registro eliminado permanentemente');
+                loadUserCourses();
+            } catch (error) {
+                console.error('Error eliminando registro:', error);
+                alert('Error al eliminar: ' + error.message);
+            }
+        }
+
+        async function viewUserCourses(userId, userName) {
+            // Cambiar a la sección de cursos de usuarios con filtro
+            showSection('user-courses');
+            alert(`Mostrando todos los cursos. Busca los cursos de: ${userName}`);
+        }
+
+        async function assignCourseToUser(userId, userName) {
+            const courseId = prompt(`Asignar curso al usuario: ${userName}\n\nIngresa el ID del curso (lo puedes copiar de la sección Cursos):`);
+            
+            if (!courseId) return;
+
+            try {
+                // Verificar que el curso existe
+                const courseDoc = await db.collection('courses').doc(courseId.trim()).get();
+                if (!courseDoc.exists) {
+                    alert('Curso no encontrado. Verifica el ID.');
+                    return;
+                }
+
+                // Verificar si ya tiene el curso
+                const existing = await db.collection('user_courses')
+                    .where('userId', '==', userId)
+                    .where('courseId', '==', courseId.trim())
+                    .get();
+
+                if (!existing.empty) {
+                    alert('Este usuario ya tiene este curso asignado.');
+                    return;
+                }
+
+                // Crear asignación
+                await db.collection('user_courses').add({
+                    userId: userId,
+                    courseId: courseId.trim(),
+                    active: true,
+                    assignedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    assignedBy: 'admin',
+                    expiresAt: null
+                });
+
+                alert(`Curso "${courseDoc.data().name}" asignado exitosamente a ${userName}`);
+                loadUsers();
+            } catch (error) {
+                console.error('Error asignando curso:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ===== USUARIOS =====
+        async function loadUsers() {
+            const container = document.getElementById('users-table-container');
+            
+            try {
+                const snapshot = await db.collection('users').orderBy('createdAt', 'desc').get();
+                
+                if (snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="ri-team-line"></i>
+                            <p>No hay usuarios registrados</p>
+                            <button class="btn-primary-custom" onclick="openUserModal()">Crear Primer Usuario</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Cursos</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                for (const doc of snapshot.docs) {
+                    const user = doc.data();
+                    
+                    // Contar cursos asignados
+                    const coursesCount = (await db.collection('user_courses').where('userId', '==', doc.id).get()).size;
+                    
+                    const isAdmin = user.roles?.admin === true;
+                    const createdDate = user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${user.displayName || 'Sin nombre'}</strong></td>
+                            <td>${user.email}</td>
+                            <td><span class="badge ${isAdmin ? 'badge-warning' : 'badge-success'}">${isAdmin ? 'Admin' : 'Usuario'}</span></td>
+                            <td><span class="badge badge-success">${coursesCount} curso(s)</span></td>
+                            <td>${createdDate}</td>
+                            <td>
+                                <button class="btn-action btn-edit" onclick="viewUserCourses('${doc.id}', '${user.displayName || user.email}')">
+                                    <i class="ri-book-line"></i> Ver Cursos
+                                </button>
+                                <button class="btn-action btn-edit" onclick="assignCourseToUser('${doc.id}', '${user.displayName || user.email}')">
+                                    <i class="ri-add-line"></i> Asignar Curso
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error cargando usuarios:', error);
+                container.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Error: ${error.message}</p></div>`;
+            }
+        }
+
+        async function openUserModal() {
+            // Cargar lista de cursos disponibles
+            const courseSelect = document.getElementById('userAssignCourse');
+            try {
+                const coursesSnap = await db.collection('courses').get();
+                courseSelect.innerHTML = '<option value="">-- Sin curso asignado --</option>';
+                coursesSnap.forEach(doc => {
+                    const course = doc.data();
+                    courseSelect.innerHTML += `<option value="${doc.id}">${course.name} - $${course.price}</option>`;
+                });
+            } catch (error) {
+                console.error('Error cargando cursos:', error);
+            }
+
+            document.getElementById('userForm').reset();
+            document.getElementById('user-credentials-display').style.display = 'none';
+            document.getElementById('userModalTitle').textContent = 'Crear Usuario y Asignar Curso';
+            document.getElementById('btn-save-user').textContent = 'Crear Usuario';
+            document.getElementById('btn-save-user').disabled = false;
+            document.getElementById('userModal').classList.add('active');
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+
+        async function saveUser() {
+            const email = document.getElementById('userEmail').value.trim();
+            const displayName = document.getElementById('userDisplayName').value.trim();
+            const password = document.getElementById('userPassword').value;
+            const courseId = document.getElementById('userAssignCourse').value;
+            const role = document.getElementById('userRole').value;
+
+            if (!email || !displayName || !password) {
+                alert('Por favor completa todos los campos obligatorios');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+
+            const btnSave = document.getElementById('btn-save-user');
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="ri-loader-4-line"></i> Creando...';
+
+            try {
+                // ADVERTENCIA: Este método cierra la sesión del admin actual
+                // Para producción, usar Cloud Function adminCreateUser
+                
+                // 1. Guardar sesión actual
+                const currentUserData = {
+                    email: currentUser.email,
+                    uid: currentUser.uid
+                };
+
+                // 2. Crear usuario en Firebase Auth
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const newUser = userCredential.user;
+
+                // 3. Actualizar displayName
+                await newUser.updateProfile({ displayName: displayName });
+
+                // 4. Crear documento en Firestore
+                const userData = {
+                    email: email,
+                    displayName: displayName,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdBy: currentUserData.uid,
+                    roles: {
+                        admin: role === 'admin'
+                    }
+                };
+
+                await db.collection('users').doc(newUser.uid).set(userData);
+
+                // 5. Asignar curso si se seleccionó uno
+                let courseName = 'Ninguno';
+                if (courseId) {
+                    const courseDoc = await db.collection('courses').doc(courseId).get();
+                    courseName = courseDoc.exists ? courseDoc.data().name : 'Ninguno';
+
+                    await db.collection('user_courses').add({
+                        userId: newUser.uid,
+                        courseId: courseId,
+                        courseName: courseName,
+                        grantedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        grantedBy: currentUserData.uid,
+                        active: true
+                    });
+                }
+
+                // 6. Cerrar sesión del nuevo usuario
+                await auth.signOut();
+
+                // 7. Mostrar mensaje de éxito y credenciales
+                document.getElementById('display-email').textContent = email;
+                document.getElementById('display-password').textContent = password;
+                document.getElementById('display-course').textContent = courseName;
+                document.getElementById('user-credentials-display').style.display = 'block';
+
+                // 8. Mostrar instrucciones para volver a iniciar sesión
+                alert(`✅ Usuario creado exitosamente!\n\nPor favor, vuelve a iniciar sesión como administrador.\n\nEmail admin: ${currentUserData.email}`);
+
+                // 9. Redirigir al login
+                window.location.href = 'admin-login.html';
+
+            } catch (error) {
+                console.error('Error creando usuario:', error);
+                let errorMessage = 'Error al crear usuario';
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'Este email ya está registrado';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Email inválido';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'La contraseña debe tener al menos 6 caracteres';
+                } else {
+                    errorMessage = error.message;
+                }
+                
+                alert(errorMessage);
+                btnSave.disabled = false;
+                btnSave.innerHTML = '<i class="ri-save-line"></i> Crear Usuario';
+            }
+        }
+
+        async function viewUserCourses(userId, userName) {
+            try {
+                const userCoursesSnap = await db.collection('user_courses').where('userId', '==', userId).get();
+                
+                if (userCoursesSnap.empty) {
+                    alert(`${userName} no tiene cursos asignados`);
+                    return;
+                }
+
+                let coursesList = `Cursos de ${userName}:\n\n`;
+                
+                for (const doc of userCoursesSnap.docs) {
+                    const userCourse = doc.data();
+                    const courseDoc = await db.collection('courses').doc(userCourse.courseId).get();
+                    if (courseDoc.exists) {
+                        const course = courseDoc.data();
+                        const grantedDate = userCourse.grantedAt ? new Date(userCourse.grantedAt.toDate()).toLocaleDateString() : 'N/A';
+                        coursesList += `📚 ${course.name}\n   Asignado: ${grantedDate}\n   Estado: ${userCourse.status || 'active'}\n\n`;
+                    }
+                }
+
+                alert(coursesList);
+            } catch (error) {
+                alert('Error al cargar cursos del usuario: ' + error.message);
+            }
+        }
+
+        async function assignCourseToUser(userId, userName) {
+            try {
+                // Obtener cursos disponibles
+                const coursesSnap = await db.collection('courses').get();
+                
+                if (coursesSnap.empty) {
+                    alert('No hay cursos disponibles para asignar');
+                    return;
+                }
+
+                let coursesOptions = 'Selecciona un curso para asignar:\n\n';
+                const coursesArray = [];
+                
+                coursesSnap.forEach(doc => {
+                    const course = doc.data();
+                    coursesArray.push({ id: doc.id, name: course.name, price: course.price });
+                });
+
+                coursesArray.forEach((course, index) => {
+                    coursesOptions += `${index + 1}. ${course.name} ($${course.price})\n`;
+                });
+
+                const selection = prompt(coursesOptions + '\nIngresa el número del curso:');
+                
+                if (!selection) return;
+
+                const selectedIndex = parseInt(selection) - 1;
+                
+                if (selectedIndex < 0 || selectedIndex >= coursesArray.length) {
+                    alert('Selección inválida');
+                    return;
+                }
+
+                const selectedCourse = coursesArray[selectedIndex];
+
+                // Verificar si ya tiene ese curso
+                const existingCourse = await db.collection('user_courses')
+                    .where('userId', '==', userId)
+                    .where('courseId', '==', selectedCourse.id)
+                    .get();
+
+                if (!existingCourse.empty) {
+                    alert('Este usuario ya tiene acceso a ese curso');
+                    return;
+                }
+
+                // Asignar curso
+                await db.collection('user_courses').add({
+                    userId: userId,
+                    courseId: selectedCourse.id,
+                    grantedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    grantedBy: currentUser.uid,
+                    status: 'active'
+                });
+
+                alert(`✅ Curso "${selectedCourse.name}" asignado a ${userName}`);
+                await loadUsers();
+
+            } catch (error) {
+                alert('Error al asignar curso: ' + error.message);
+            }
+        }
+
+        // ==================== SOLICITUDES DE ACCESO ====================
+        
+        async function loadRequests() {
+            try {
+                const snapshot = await db.collection('access_requests')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                const tbody = document.getElementById('requests-table-body');
+                const pendingBadge = document.getElementById('pending-badge');
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="ri-mail-line"></i>
+                                <p>No hay solicitudes de acceso</p>
+                            </td>
+                        </tr>
+                    `;
+                    pendingBadge.textContent = '0';
+                    return;
+                }
+
+                let pendingCount = 0;
+                let html = '';
+                
+                snapshot.forEach(doc => {
+                    const req = doc.data();
+                    const date = req.createdAt?.toDate();
+                    const dateStr = date ? date.toLocaleDateString('es-AR', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : 'Sin fecha';
+                    
+                    const isPending = req.status === 'pending';
+                    if (isPending) pendingCount++;
+                    
+                    const statusBadge = isPending 
+                        ? '<span style="background: #ef4444; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem;">Pendiente</span>'
+                        : '<span style="background: #10b981; color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem;">Procesada</span>';
+                    
+                    const courseMap = {
+                        'panaderia-basica': 'Panadería Básica',
+                        'masa-madre': 'Pan de Masa Madre',
+                        'panaderia-profesional': 'Panadería Profesional',
+                        'todos': 'Todos los cursos',
+                        'otro': 'Otro'
+                    };
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${req.name}</strong></td>
+                            <td>${req.email}</td>
+                            <td>${req.phone}</td>
+                            <td>${courseMap[req.courseInterest] || req.courseInterest || 'No especificado'}</td>
+                            <td><small>${dateStr}</small></td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                ${isPending ? `
+                                    <button class="btn-action" onclick="viewRequest('${doc.id}')" title="Ver detalles">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                    <button class="btn-action" onclick="approveRequest('${doc.id}', '${req.name}', '${req.email}')" title="Crear usuario" style="color: #10b981;">
+                                        <i class="ri-user-add-line"></i>
+                                    </button>
+                                    <button class="btn-action" onclick="rejectRequest('${doc.id}')" title="Rechazar" style="color: #ef4444;">
+                                        <i class="ri-close-line"></i>
+                                    </button>
+                                ` : `
+                                    <button class="btn-action" onclick="viewRequest('${doc.id}')" title="Ver detalles">
+                                        <i class="ri-eye-line"></i>
+                                    </button>
+                                `}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tbody.innerHTML = html;
+                pendingBadge.textContent = pendingCount;
+                pendingBadge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+
+            } catch (error) {
+                console.error('Error cargando solicitudes:', error);
+                alert('Error al cargar solicitudes: ' + error.message);
+            }
+        }
+
+        async function viewRequest(requestId) {
+            try {
+                const doc = await db.collection('access_requests').doc(requestId).get();
+                const req = doc.data();
+                
+                const courseMap = {
+                    'panaderia-basica': 'Panadería Básica',
+                    'masa-madre': 'Pan de Masa Madre',
+                    'panaderia-profesional': 'Panadería Profesional',
+                    'todos': 'Todos los cursos',
+                    'otro': 'Otro'
+                };
+                
+                alert(`📩 Solicitud de Acceso\n\n` +
+                    `Nombre: ${req.name}\n` +
+                    `Email: ${req.email}\n` +
+                    `Teléfono: ${req.phone}\n` +
+                    `Curso: ${courseMap[req.courseInterest] || 'No especificado'}\n` +
+                    `Mensaje: ${req.message || 'Sin mensaje'}\n` +
+                    `Estado: ${req.status === 'pending' ? 'Pendiente' : 'Procesada'}`
+                );
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function approveRequest(requestId, name, email) {
+            if (!confirm(`¿Crear usuario para ${name}?`)) return;
+            
+            // Abrir modal de crear usuario con datos pre-cargados
+            openUserModal();
+            document.getElementById('userName').value = name;
+            document.getElementById('userEmail').value = email;
+            
+            // Marcar solicitud como procesada después de crear el usuario
+            // El admin completará el proceso creando el usuario
+            setTimeout(async () => {
+                try {
+                    await db.collection('access_requests').doc(requestId).update({
+                        status: 'approved',
+                        reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        reviewedBy: currentUser.uid
+                    });
+                    await loadRequests();
+                } catch (error) {
+                    console.error('Error actualizando solicitud:', error);
+                }
+            }, 1000);
+        }
+
+        async function rejectRequest(requestId) {
+            if (!confirm('¿Rechazar esta solicitud?')) return;
+            
+            try {
+                await db.collection('access_requests').doc(requestId).update({
+                    status: 'rejected',
+                    reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    reviewedBy: currentUser.uid
+                });
+                
+                alert('Solicitud rechazada');
+                await loadRequests();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ==================== FIN SOLICITUDES ====================
+
+        // Cerrar sesión
+        async function handleLogout() {
+            if (!confirm('¿Cerrar sesión?')) return;
+            try {
+                await auth.signOut();
+                window.location.href = 'admin-login.html';
+            } catch (error) {
+                alert('Error al cerrar sesión: ' + error.message);
+            }
+        }
+
+        // Cerrar modales al hacer click fuera
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // ============================================
+        // FUNCIONES DE DASHBOARD - MÉTRICAS DE VENTAS
+        // ============================================
+        let salesChart = null;
+
+        async function loadDashboardMetrics() {
+            try {
+                const ordersRef = db.collection('orders');
+                const productsRef = db.collection('products');
+
+                // Obtener todas las órdenes
+                const ordersSnapshot = await ordersRef.get();
+                const productsSnapshot = await productsRef.get();
+
+                // Total de productos
+                const totalProducts = productsSnapshot.size;
+                document.getElementById('stat-products').textContent = totalProducts;
+
+                if (ordersSnapshot.empty) {
+                    document.getElementById('stat-orders').textContent = '0';
+                    document.getElementById('stat-revenue').textContent = '$0';
+                    document.getElementById('stat-today').textContent = '$0';
+                    document.getElementById('stat-week').textContent = '$0';
+                    document.getElementById('stat-month').textContent = '$0';
+                    document.getElementById('stat-avg-order').textContent = '$0';
+                    document.getElementById('stat-pending').textContent = '0';
+                    return;
+                }
+
+                // Procesar órdenes
+                const orders = [];
+                let totalRevenue = 0;
+                let pendingOrders = 0;
+
+                ordersSnapshot.forEach(doc => {
+                    const order = { id: doc.id, ...doc.data() };
+                    orders.push(order);
+                    
+                    const total = parseFloat(order.total) || 0;
+                    totalRevenue += total;
+
+                    if (order.status === 'pending' || order.status === 'pendiente') {
+                        pendingOrders++;
+                    }
+                });
+
+                // Estadísticas generales
+                document.getElementById('stat-orders').textContent = orders.length;
+                document.getElementById('stat-revenue').textContent = `$${totalRevenue.toFixed(0)}`;
+                document.getElementById('stat-pending').textContent = pendingOrders;
+
+                // Ticket promedio
+                const avgOrder = orders.length > 0 ? totalRevenue / orders.length : 0;
+                document.getElementById('stat-avg-order').textContent = `$${avgOrder.toFixed(0)}`;
+
+                // Calcular ventas por período
+                const now = new Date();
+                const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+                let todayRevenue = 0;
+                let weekRevenue = 0;
+                let monthRevenue = 0;
+
+                orders.forEach(order => {
+                    const orderDate = order.createdAt?.toDate() || new Date(0);
+                    const total = parseFloat(order.total) || 0;
+
+                    if (orderDate >= todayStart) todayRevenue += total;
+                    if (orderDate >= weekStart) weekRevenue += total;
+                    if (orderDate >= monthStart) monthRevenue += total;
+                });
+
+                document.getElementById('stat-today').textContent = `$${todayRevenue.toFixed(0)}`;
+                document.getElementById('stat-week').textContent = `$${weekRevenue.toFixed(0)}`;
+                document.getElementById('stat-month').textContent = `$${monthRevenue.toFixed(0)}`;
+
+                // Gráfico de ventas últimos 7 días
+                loadSalesChart(orders);
+
+                // Top productos
+                loadTopProducts(orders);
+
+            } catch (error) {
+                console.error('Error loading dashboard metrics:', error);
+            }
+        }
+
+        function loadSalesChart(orders) {
+            const canvas = document.getElementById('salesChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            
+            // Destruir gráfico anterior si existe
+            if (salesChart) {
+                salesChart.destroy();
+            }
+
+            // Preparar datos últimos 7 días
+            const last7Days = [];
+            const salesByDay = {};
+
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' });
+                last7Days.push(dateStr);
+                salesByDay[dateStr] = 0;
+            }
+
+            // Agrupar ventas por día
+            orders.forEach(order => {
+                const orderDate = order.createdAt?.toDate() || new Date(0);
+                const dateStr = orderDate.toLocaleDateString('es-AR', { month: 'short', day: 'numeric' });
+                
+                if (salesByDay.hasOwnProperty(dateStr)) {
+                    salesByDay[dateStr] += parseFloat(order.total) || 0;
+                }
+            });
+
+            const salesData = last7Days.map(day => salesByDay[day]);
+
+            // Crear gráfico
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: last7Days,
+                    datasets: [{
+                        label: 'Ventas ($)',
+                        data: salesData,
+                        borderColor: '#607178',
+                        backgroundColor: 'rgba(96, 113, 120, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadTopProducts(orders) {
+            const productSales = {};
+
+            // Contar ventas por producto
+            orders.forEach(order => {
+                if (order.items && Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        const name = item.nombre || item.name || 'Producto';
+                        const quantity = parseInt(item.cantidad || item.quantity) || 1;
+                        
+                        if (!productSales[name]) {
+                            productSales[name] = 0;
+                        }
+                        productSales[name] += quantity;
+                    });
+                }
+            });
+
+            // Ordenar por cantidad
+            const sortedProducts = Object.entries(productSales)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const container = document.getElementById('top-products-list');
+            
+            if (sortedProducts.length === 0) {
+                container.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No hay datos de ventas</p>';
+                return;
+            }
+
+            let html = '<div style="display: flex; flex-direction: column; gap: 10px;">';
+            
+            sortedProducts.forEach(([name, count], index) => {
+                const colors = ['#607178', '#ede8d0', '#353c42', '#94a3b8', '#cbd5e1'];
+                const color = colors[index % colors.length];
+                
+                html += `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="background: ${color}; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem;">
+                            ${index + 1}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--color-dark);">${name}</div>
+                            <div style="font-size: 0.85rem; color: #6c757d;">${count} vendidos</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Cargar métricas cuando se muestre el dashboard
+        const originalShowSection = window.showSection;
+        window.showSection = function(sectionName) {
+            originalShowSection(sectionName);
+            
+            if (sectionName === 'dashboard') {
+                setTimeout(() => loadDashboardMetrics(), 100);
+            }
+        };
+    </script>
+    
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</body>
+</html>

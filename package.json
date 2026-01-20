@@ -1,0 +1,36 @@
+{
+  "name": "el-artesano-landing-ecommerce",
+  "version": "3.0.0",
+  "description": "Landing page moderna y e-commerce completo para panadería artesanal con Firebase serverless, MercadoPago y sistema de cursos con videos seguros cifrados",
+  "main": "index.html",
+  "scripts": {
+    "serve": "npx serve -s . -l 5000",
+    "start": "npx serve -s . -l 5000",
+    "deploy": "firebase deploy",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:rules": "firebase deploy --only firestore:rules",
+    "logs": "firebase functions:log"
+  },
+  "keywords": [
+    "landing-page",
+    "ecommerce",
+    "panaderia",
+    "bakery",
+    "firebase",
+    "serverless",
+    "mercadopago",
+    "online-courses",
+    "video-security",
+    "aes-encryption"
+  ],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/el-artesano"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

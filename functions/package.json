@@ -1,0 +1,27 @@
+{
+  "name": "el-artesano-functions",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Functions para El Artesano - Sistema de cursos online con MercadoPago",
+  "main": "index.js",
+  "engines": {
+    "node": "18"
+  },
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^4.5.0",
+    "mercadopago": "^2.12.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
