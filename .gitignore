@@ -35,3 +35,12 @@ build/
 # Uploads
 uploads/
 temp/
+
+# Local Firebase config (ignore local copy with API keys)
+public/js/firebase-init.js
+firebase-init.js
+
+# Firebase / credentials
+serviceAccount*.json
+functions/.runtimeconfig.json
+.firebase/
