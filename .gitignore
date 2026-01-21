@@ -44,3 +44,18 @@ firebase-init.js
 serviceAccount*.json
 functions/.runtimeconfig.json
 .firebase/
+
+# Documentación con información sensible del proyecto
+CONFIGURACION_COMPLETA.md
+RESUMEN_FINAL.md
+INSTRUCCIONES_COMPLETAS.md
+TRANSFERENCIA_CLIENTE.md
+GUIA_PRUEBAS.md
+GUIA_MERCADOPAGO.md
+SEGURIDAD_README.md
+
+# Archivos innecesarios de documentación
+CAMBIOS_OPTIMIZACION.md
+LIMPIEZA_ARCHIVOS.md
+ARCHIVOS_ESENCIALES.md
+RECOMENDACION_CLIENTE.md
